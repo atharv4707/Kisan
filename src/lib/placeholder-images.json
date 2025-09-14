@@ -1,0 +1,22 @@
+{
+  "placeholderImages": [
+    {
+      "id": "onboarding-1",
+      "description": "A thoughtful farmer standing in a field, looking at their crops, representing personalized advice.",
+      "imageUrl": "https://picsum.photos/seed/farmer_portrait/800/600",
+      "imageHint": "indian farmer"
+    },
+    {
+      "id": "onboarding-2",
+      "description": "A close-up of a diseased leaf being scanned by a phone, illustrating pest detection.",
+      "imageUrl": "https://picsum.photos/seed/pest_detection/800/600",
+      "imageHint": "plant disease"
+    },
+    {
+      "id": "onboarding-3",
+      "description": "A bustling and vibrant agricultural market, showcasing the market prices feature.",
+      "imageUrl": "https://picsum.photos/seed/market_prices/800/600",
+      "imageHint": "vegetable market"
+    }
+  ]
+}
