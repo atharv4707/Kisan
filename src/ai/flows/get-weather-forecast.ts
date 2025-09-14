@@ -23,9 +23,10 @@ const DailyForecastSchema = z.object({
 });
 
 const WeatherForecastOutputSchema = z.object({
-  summary: z.string().describe('A brief, friendly summary of the weather for the next few days.'),
-  forecast: z.array(DailyForecastSchema),
+  summary: z.string().optional().describe('A brief, friendly summary of the weather for the next few days.'),
+  forecast: z.array(DailyForecastSchema).optional(),
   alert: z.string().optional().describe('Any urgent weather alerts.'),
+  error: z.string().optional().describe('An error message if the forecast could not be fetched.'),
 });
 export type WeatherForecastOutput = z.infer<typeof WeatherForecastOutputSchema>;
 
@@ -136,17 +137,24 @@ const codeToIcon: Record<number, WeatherForecastOutput['forecast'][0]['icon']> =
 export async function getWeatherForecast(input: WeatherForecastInput): Promise<WeatherForecastOutput> {
     const apiKey = process.env.WEATHER_API_KEY;
     if (!apiKey) {
-        throw new Error('The Weather API key is not configured in the environment. Please add WEATHER_API_KEY to your Vercel project settings.');
+        return { error: 'The Weather API key is not configured in the environment. Please add WEATHER_API_KEY to your Vercel project settings.' };
     }
 
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(input.location)}&days=3`;
     
-    const response = await fetch(url);
+    let response;
+    try {
+        response = await fetch(url, { cache: 'no-store' });
+    } catch (err: any) {
+        console.error('Failed to fetch weather data', err);
+        return { error: `Failed to connect to weather service: ${err.message}` };
+    }
+
     if (!response.ok) {
         if (response.status === 401) {
-            throw new Error('Weather API key is invalid or unauthorized. Please check the key in your Vercel project settings and redeploy.');
+            return { error: 'Weather API key is invalid or unauthorized. Please check the key in your Vercel project settings and redeploy.' };
         }
-        throw new Error(`Failed to fetch weather data. Status: ${response.status} ${response.statusText}`);
+        return { error: `Failed to fetch weather data. Status: ${response.status} ${response.statusText}` };
     }
     const rawData = await response.json();
 
@@ -160,7 +168,7 @@ export async function getWeatherForecast(input: WeatherForecastInput): Promise<W
     });
     
     if (!output) {
-        throw new Error('Failed to generate weather summary from AI.');
+        return { error: 'Failed to generate weather summary from AI.' };
     }
 
     const forecast = weatherData.forecast.forecastday.map((day, index) => {

@@ -39,7 +39,12 @@ export default function Dashboard() {
         try {
           setWeatherError(null);
           const forecast = await getWeatherForecast({ location: user.village });
-          setWeather(forecast);
+          if (forecast.error) {
+            setWeatherError(forecast.error);
+            setWeather(null);
+          } else {
+            setWeather(forecast);
+          }
         } catch (err: any) {
           console.error(err);
           setWeatherError(err.message || t('weather_error_message'));
