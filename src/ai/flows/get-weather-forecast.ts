@@ -168,6 +168,7 @@ export async function getWeatherForecast(input: WeatherForecastInput): Promise<W
     });
     
     if (!output) {
+        // Return an error in the output object instead of throwing
         return { error: 'Failed to generate weather summary from AI.' };
     }
 
