@@ -25,7 +25,7 @@ const fileToDataUri = (file: File): Promise<string> => {
 
 const RemediesList = ({ remedyString }: { remedyString: string }) => {
   if (!remedyString) return null;
-  const items = remedyString.split(/[-•*]/).map(s => s.trim()).filter(Boolean);
+  const items = remedyString.split(/[\n-•*]/).map(s => s.trim()).filter(Boolean);
   if (items.length === 0) return <p>{remedyString}</p>;
 
   return (

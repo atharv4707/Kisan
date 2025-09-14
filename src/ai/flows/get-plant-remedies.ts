@@ -18,8 +18,8 @@ const GetPlantRemediesInputSchema = z.object({
 export type GetPlantRemediesInput = z.infer<typeof GetPlantRemediesInputSchema>;
 
 const GetPlantRemediesOutputSchema = z.object({
-  chemical: z.string().describe('A bulleted list of chemical remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen.'),
-  organic: z.string().describe('A bulleted list of organic remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen.'),
+  chemical: z.string().describe('A bulleted list of chemical remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen. Example: "- Remedy one\\n- Remedy two"'),
+  organic: z.string().describe('A bulleted list of organic remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen. Example: "- Remedy one\\n- Remedy two"'),
 });
 export type GetPlantRemediesOutput = z.infer<typeof GetPlantRemediesOutputSchema>;
 
