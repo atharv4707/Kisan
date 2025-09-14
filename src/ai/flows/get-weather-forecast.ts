@@ -66,7 +66,7 @@ const weatherAnalysisPrompt = ai.definePrompt({
         weatherDataString: z.string(),
     })},
     output: { schema: z.object({ 
-        summary: z.string().describe("A brief, friendly, one-sentence summary of the weather for the next few days. Mention the location."),
+        summary: z.string().describe("A brief, friendly, one-sentence summary of the weather for the next 3 days. Mention the location."),
         alert: z.string().optional().describe("A brief, friendly alert for any urgent weather conditions (e.g., high winds, storms, heavy rain) in the next 3 days. If no alerts, this should be empty."),
      }) },
     prompt: `You are a helpful weather assistant. Analyze the following weather data for the user's location and provide a short, friendly summary and an optional alert.
@@ -136,14 +136,17 @@ const codeToIcon: Record<number, WeatherForecastOutput['forecast'][0]['icon']> =
 export async function getWeatherForecast(input: WeatherForecastInput): Promise<WeatherForecastOutput> {
     const apiKey = process.env.WEATHER_API_KEY;
     if (!apiKey) {
-        throw new Error('Weather API key is not configured. Please add WEATHER_API_KEY to your .env file.');
+        throw new Error('The Weather API key is not configured in the environment. Please add WEATHER_API_KEY to your Vercel project settings.');
     }
 
     const url = `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${encodeURIComponent(input.location)}&days=3`;
     
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error(`Failed to fetch weather data: ${response.statusText}`);
+        if (response.status === 401) {
+            throw new Error('Weather API key is invalid or unauthorized. Please check the key in your Vercel project settings and redeploy.');
+        }
+        throw new Error(`Failed to fetch weather data. Status: ${response.status} ${response.statusText}`);
     }
     const rawData = await response.json();
 
