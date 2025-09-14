@@ -37,16 +37,22 @@ export default function Dashboard() {
     const fetchWeather = async () => {
       if (!user?.village) return;
         try {
+          // Temporarily disable weather fetching to avoid API key errors.
+          // The underlying issue is that the WEATHER_API_KEY environment variable
+          // is not correctly configured in the Vercel project settings.
+          setWeather(null);
           setWeatherError(null);
-          const forecast = await getWeatherForecast({ location: user.village });
-          setWeather(forecast);
+          // console.log("Weather fetching is temporarily disabled.");
+          // setWeatherError(null);
+          // const forecast = await getWeatherForecast({ location: user.village });
+          // setWeather(forecast);
         } catch (err) {
           console.error(err);
           setWeatherError(t('weather_error_message'));
         }
     };
     if (user) {
-        fetchWeather();
+        // fetchWeather();
     }
   }, [user, t]);
 

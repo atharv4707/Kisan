@@ -51,6 +51,12 @@ const getBackgroundColorForWeather = (condition: string) => {
 
 const WeatherDisplay = ({ weather, error }: { weather: WeatherForecastOutput | null, error: string | null}) => {
     const { t } = useUser();
+
+    // Do not render anything if there is no weather data or an error.
+    if (!weather && !error) {
+        return null;
+    }
+    
     if (error) {
         return (
             <Alert variant="destructive">
