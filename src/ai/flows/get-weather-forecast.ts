@@ -134,7 +134,7 @@ const codeToIcon: Record<number, WeatherForecastOutput['forecast'][0]['icon']> =
 
 
 export async function getWeatherForecast(input: WeatherForecastInput): Promise<WeatherForecastOutput> {
-    const apiKey = "8264a0d53f2c4eee973134514251109";
+    const apiKey = process.env.WEATHER_API_KEY;
     if (!apiKey) {
         throw new Error('Weather API key is not configured. Please add WEATHER_API_KEY to your .env file.');
     }
