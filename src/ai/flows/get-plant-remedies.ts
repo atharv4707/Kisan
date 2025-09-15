@@ -18,8 +18,8 @@ const GetPlantRemediesInputSchema = z.object({
 export type GetPlantRemediesInput = z.infer<typeof GetPlantRemediesInputSchema>;
 
 const GetPlantRemediesOutputSchema = z.object({
-  chemical: z.string().describe('A bulleted list of chemical remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen. Example: "- Remedy one\\n- Remedy two"'),
-  organic: z.string().describe('A bulleted list of organic remedies, including specific quantities and climate conditions for application. Each bullet point should be on a new line and start with a hyphen. Example: "- Remedy one\\n- Remedy two"'),
+  chemical: z.string().describe('A comma-separated list of chemical remedies, including specific quantities and climate conditions for application. Example: "Remedy one, Remedy two"'),
+  organic: z.string().describe('A comma-separated list of organic remedies, including specific quantities and climate conditions for application. Example: "Remedy one, Remedy two"'),
 });
 export type GetPlantRemediesOutput = z.infer<typeof GetPlantRemediesOutputSchema>;
 
@@ -44,12 +44,12 @@ Farmer's Description: {{{description}}}
 {{/if}}
 
 Your response must include:
-1.  **Chemical Remedies**: Provide a bulleted list of chemical remedies. For each remedy, specify:
+1.  **Chemical Remedies**: Provide a comma-separated list of chemical remedies. For each remedy, specify:
     *   The exact quantity or dosage to use (e.g., "Mix 5ml of [Product] per liter of water").
     *   The ideal climate conditions for application (e.g., "Apply in the early morning or late evening to avoid leaf burn").
-    *   Each bullet point must be on a new line and start with a hyphen.
-2.  **Organic Remedies**: Provide a bulleted list of organic remedies, following the same quantity and climate condition guidelines.
-    *   Each bullet point must be on a new line and start with a hyphen.
+2.  **Organic Remedies**: Provide a comma-separated list of organic remedies, following the same quantity and climate condition guidelines.
+
+Do NOT use bullet points or any special formatting. Just return comma-separated text.
 `,
 });
 
@@ -60,11 +60,19 @@ const getPlantRemediesFlow = ai.defineFlow(
     outputSchema: GetPlantRemediesOutputSchema,
   },
   async input => {
-    const { output } = await prompt(input);
-    if (!output) {
-      throw new Error('Failed to generate remedies from AI');
+    try {
+        const { output } = await prompt(input);
+        if (!output) {
+          throw new Error('Failed to generate remedies from AI');
+        }
+        
+        return output;
+
+    } catch (err: any) {
+        if (err.message?.includes('503')) {
+            throw new Error("The AI service is currently busy. Please try again in a few moments.");
+        }
+        throw err;
     }
-    
-    return output;
   }
 );

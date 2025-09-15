@@ -25,7 +25,7 @@ const fileToDataUri = (file: File): Promise<string> => {
 
 const RemediesList = ({ remedyString }: { remedyString: string }) => {
   if (!remedyString) return null;
-  const items = remedyString.split(/[\n-•*]/).map(s => s.trim()).filter(Boolean);
+  const items = remedyString.split(/,/).map(s => s.trim()).filter(Boolean);
   if (items.length === 0) return <p>{remedyString}</p>;
 
   return (
@@ -230,7 +230,7 @@ export default function PestDetectionModal() {
         setRemedies(remediesOutput);
       } catch (err: any) {
          console.error(err);
-        if (err.message?.includes('429') || err.message?.includes('503')) {
+        if (err.message?.includes('429') || err.message?.includes('503') || err.message?.includes('The AI service is currently busy')) {
             setError("The AI service is currently busy. Please try again in a few moments.");
         } else {
             setError("Failed to get remedies. Please try again.");
