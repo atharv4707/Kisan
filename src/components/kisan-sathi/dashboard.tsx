@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardHeader from './dashboard-header';
 import FeatureCards from './feature-cards';
-import { getWeatherForecast, type WeatherForecastOutput } from '@/ai/flows/get-weather-forecast';
+// import { getWeatherForecast, type WeatherForecastOutput } from '@/ai/flows/get-weather-forecast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Bot } from 'lucide-react';
 import VoiceAssistantModal from './modals/voice-assistant';
@@ -30,30 +30,30 @@ const VoiceAssistantButton = () => {
 
 export default function Dashboard() {
   const { user, t } = useUser();
-  const [weather, setWeather] = useState<WeatherForecastOutput | null>(null);
-  const [weatherError, setWeatherError] = useState<string | null>(null);
+  // const [weather, setWeather] = useState<WeatherForecastOutput | null>(null);
+  // const [weatherError, setWeatherError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      if (!user?.village) return;
-        try {
-          setWeatherError(null);
-          const forecast = await getWeatherForecast({ location: user.village });
-          if (forecast.error) {
-            setWeatherError(forecast.error);
-            setWeather(null);
-          } else {
-            setWeather(forecast);
-          }
-        } catch (err: any) {
-          console.error(err);
-          setWeatherError(err.message || t('weather_error_message'));
-        }
-    };
-    if (user) {
-        fetchWeather();
-    }
-  }, [user, t]);
+  // useEffect(() => {
+  //   const fetchWeather = async () => {
+  //     if (!user?.village) return;
+  //       try {
+  //         setWeatherError(null);
+  //         const forecast = await getWeatherForecast({ location: user.village });
+  //         if (forecast.error) {
+  //           setWeatherError(forecast.error);
+  //           setWeather(null);
+  //         } else {
+  //           setWeather(forecast);
+  //         }
+  //       } catch (err: any) {
+  //         console.error(err);
+  //         setWeatherError(err.message || t('weather_error_message'));
+  //       }
+  //   };
+  //   if (user) {
+  //       fetchWeather();
+  //   }
+  // }, [user, t]);
 
   if (!user) {
     // This can be a loading spinner or some fallback UI
@@ -63,7 +63,7 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col min-h-screen p-4 md:p-6 space-y-4 animate-in fade-in duration-500 pb-24">
         <div className="flex-grow">
-            <DashboardHeader userName={user.name} weather={weather} weatherError={weatherError} />
+            <DashboardHeader userName={user.name} />
             <div className="mt-4">
                 <FeatureCards />
             </div>
