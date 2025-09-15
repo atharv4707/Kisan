@@ -63,6 +63,11 @@ const diagnosePlantDiseaseFlow = ai.defineFlow(
     outputSchema: z.nullable(DiagnosePlantDiseaseOutputSchema),
   },
   async input => {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error(
+        'The GEMINI_API_KEY environment variable is not set in Vercel. Please add it to your project settings to enable AI features.'
+      );
+    }
     const { output } = await prompt(input);
     return output;
   }
