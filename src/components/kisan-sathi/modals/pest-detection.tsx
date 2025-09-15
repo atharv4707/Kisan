@@ -196,6 +196,13 @@ export default function PestDetectionModal() {
         description: description,
         language: language,
       });
+
+      if (!diagnosis) {
+        setError(t('pest_detection_error_message'));
+        setIsLoading(false);
+        return;
+      }
+
       setResult(diagnosis);
       setShowCamera(false);
     } catch (err: any) {

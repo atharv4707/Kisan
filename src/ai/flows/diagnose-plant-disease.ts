@@ -27,7 +27,7 @@ const DiagnosePlantDiseaseOutputSchema = z.object({
 });
 export type DiagnosePlantDiseaseOutput = z.infer<typeof DiagnosePlantDiseaseOutputSchema>;
 
-export async function diagnosePlantDisease(input: DiagnosePlantDiseaseInput): Promise<DiagnosePlantDiseaseOutput> {
+export async function diagnosePlantDisease(input: DiagnosePlantDiseaseInput): Promise<DiagnosePlantDiseaseOutput | null> {
   return diagnosePlantDiseaseFlow(input);
 }
 
@@ -60,14 +60,10 @@ const diagnosePlantDiseaseFlow = ai.defineFlow(
   {
     name: 'diagnosePlantDiseaseFlow',
     inputSchema: DiagnosePlantDiseaseInputSchema,
-    outputSchema: DiagnosePlantDiseaseOutputSchema,
+    outputSchema: z.nullable(DiagnosePlantDiseaseOutputSchema),
   },
   async input => {
     const { output } = await prompt(input);
-    if (!output) {
-      throw new Error('Failed to generate diagnosis from AI');
-    }
-    
     return output;
   }
 );
